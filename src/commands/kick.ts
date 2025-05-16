@@ -61,3 +61,5 @@ const kickCommand: Command = {
         }
     }
 }
+
+export default kickCommand;
