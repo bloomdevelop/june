@@ -4,7 +4,11 @@ import { readdir } from "node:fs/promises";
 import { parse } from "valibot";
 import { config } from "./config";
 
-const client = new Client();
+/**
+ * @description Client instance
+ * @type {Client}
+ */
+export const client = new Client();
 
 /**
  * @description Collection of commands
