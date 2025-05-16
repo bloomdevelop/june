@@ -8,6 +8,10 @@ const CommandSchema = v.object({
    */
   name: v.string(),
   /**
+   * Command's description
+   */
+  description: v.string(),
+  /**
    * Disables the command
    */
   disabled: v.boolean(),

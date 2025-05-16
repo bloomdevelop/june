@@ -10,6 +10,7 @@ const text = textBuilder([
 
 const aboutCommand: Command = {
   name: "about",
+  description: "Get information about June",
   disabled: false,
   execute: async (msg) => {
     await msg.reply({
