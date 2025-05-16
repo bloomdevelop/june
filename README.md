@@ -1,4 +1,6 @@
-# june
+# June
+
+Multi-purpose `revolt.js` bot.
 
 To install dependencies:
 
