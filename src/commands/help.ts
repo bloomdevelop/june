@@ -1,5 +1,5 @@
 import type { Command } from "@/types";
-import { collections } from "..";
+import { collections } from "@/utils/loadCommands";
 import { config } from "@/config";
 import textBuilder from "@/utils/textBuilder";
 

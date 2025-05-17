@@ -1,7 +1,7 @@
-import type { Command } from "../types";
-import textBuilder from "../utils/textBuilder";
-import pkg from "../../package.json";
-import { config } from "../config";
+import type { Command } from "@/types";
+import textBuilder from "@/utils/textBuilder";
+import pkg from "@/../package.json";
+import { config } from "@/config";
 
 const text = textBuilder([
   "June is a Revolt.chat bot built with bun and revolt.js, it's designed to be a multi-purpose bot.",
