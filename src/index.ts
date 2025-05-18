@@ -1,5 +1,4 @@
 import { Client } from "revolt.js";
-import type { Command } from "./types";
 import { config } from "./config";
 import { loadCommands, collections } from "./utils/loadCommands";
 import { Logger } from "./utils/logger";
@@ -42,11 +41,15 @@ client.on("messageCreate", async (message) => {
 		}
 	} catch (error) {
 		if (error instanceof Error) {
-			logger.error(`Error executing command "${command.name}": ${error.message}`);
+			logger.error(
+				`Error executing command "${command.name}": ${error.message}`,
+			);
 		} else {
-			logger.error(`Error executing command "${command.name}": ${String(error)}`);
+			logger.error(
+				`Error executing command "${command.name}": ${String(error)}`,
+			);
 		}
-		
+
 		await message.reply("An error occurred while executing the command.");
 	}
 });
