@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai/node";
 
 const askCommand: Command = {
 	name: "ask",
-  description: "Ask a question to Gemini",
+	description: "Ask a question to Gemini",
 	disabled: !config.geminiApiKey,
 	execute: async (msg, args) => {
 		const ai = new GoogleGenAI({
@@ -25,7 +25,7 @@ const askCommand: Command = {
 				contents: prompt,
 			});
 
-			msg.reply({ content: response.text });
+			msg.reply(response.text || "No response");
 		} catch (error) {
 			if (error instanceof Error) {
 				const errorText = textBuilder([
@@ -36,7 +36,13 @@ const askCommand: Command = {
 				]);
 
 				await msg?.reply({
-					content: errorText,
+					embeds: [
+						{
+							title: "Error",
+							description: errorText,
+							colour: config.embedColor
+						},
+					],
 				});
 			}
 		}
