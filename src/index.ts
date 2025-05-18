@@ -2,21 +2,23 @@ import { Client } from "revolt.js";
 import type { Command } from "./types";
 import { config } from "./config";
 import { loadCommands, collections } from "./utils/loadCommands";
+import { Logger } from "./utils/logger";
 
 /**
  * @description Client instance
  */
 export const client = new Client();
+const logger = new Logger();
 
 // Initialize and load commands
 await loadCommands(collections);
 
 client.on("ready", async () => {
-	console.log(`Logged in as ${client.user?.username}`);
+	logger.info(`Logged in as ${client.user?.username}`);
 });
 
 client.on("disconnected", () => {
-	console.log("Bot got disconnected, trying it again...");
+	logger.warn("Bot got disconnected, trying it again...");
 });
 
 client.on("messageCreate", async (message) => {
@@ -39,7 +41,12 @@ client.on("messageCreate", async (message) => {
 			await command.execute(message, args);
 		}
 	} catch (error) {
-		console.error(error);
+		if (error instanceof Error) {
+			logger.error(`Error executing command "${command.name}": ${error.message}`);
+		} else {
+			logger.error(`Error executing command "${command.name}": ${String(error)}`);
+		}
+		
 		await message.reply("An error occurred while executing the command.");
 	}
 });

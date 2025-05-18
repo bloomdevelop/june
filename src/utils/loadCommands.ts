@@ -1,5 +1,6 @@
 import type { Command } from "../types";
 import { readdir } from "node:fs/promises";
+import { Logger } from "./logger";
 
 /**
  * @description Collection of commands
@@ -19,7 +20,10 @@ export const collections: Map<string, Command> = new Map();
  * @returns {Promise<void>} A promise that resolves once all command loading attempts are complete.
  *                          It does not reject on individual command load failures; these are logged as warnings.
  */
-export async function loadCommands(collections: Map<string, Command>): Promise<void> {
+export async function loadCommands(
+	collections: Map<string, Command>,
+): Promise<void> {
+	const logger = new Logger();
 	const start = Date.now();
 	const commandFiles = await readdir("./src/commands");
 
@@ -27,31 +31,41 @@ export async function loadCommands(collections: Map<string, Command>): Promise<v
 		try {
 			const { default: cmd } = await import(`../commands/${file}`);
 
-			if (!cmd || typeof cmd !== 'object') {
-				console.warn(`[Command Loader] Invalid export in ${file}. Skipping.`);
+			if (!cmd || typeof cmd !== "object") {
+				logger.warn(`Invalid export in ${file}. Skipping.`);
 				return;
 			}
-			if (typeof cmd.name !== 'string' || !cmd.name.trim()) {
-				console.warn(`[Command Loader] Command name is missing or invalid in ${file}. Skipping.`);
+			if (typeof cmd.name !== "string" || !cmd.name.trim()) {
+				logger.warn(`Command name is missing or invalid in ${file}. Skipping.`);
 				return;
 			}
-			if (typeof cmd.execute !== 'function') {
-				console.warn(`[Command Loader] Command ${cmd.name} (from ${file}) is missing an execute function. Skipping.`);
+			if (typeof cmd.execute !== "function") {
+				logger.warn(
+					`Command ${cmd.name} (from ${file}) is missing an execute function. Skipping.`,
+				);
 				return;
 			}
 			if (collections.has(cmd.name)) {
-				console.warn(`[Command Loader] Duplicate command name "${cmd.name}" found in ${file}. Skipping.`);
+				logger.warn(
+					`Duplicate command name "${cmd.name}" found in ${file}. Skipping.`,
+				);
 				return;
 			}
-			console.log(`[Command Loader] Loaded command: ${cmd.name}`);
+			logger.info(`Loaded command: ${cmd.name}`);
 			collections.set(cmd.name, cmd);
 		} catch (error) {
-			console.error(`[Command Loader] Error loading command from ${file}:`, error);
+			if (error instanceof Error) {
+				logger.error(`Error loading command from ${file}: ${error.message}`);
+			} else {
+				logger.error(`Error loading command from ${file}: ${String(error)}`);
+			}
 		}
 	});
 
 	await Promise.all(importPromises);
 	const end = Date.now();
 	const seconds = ((end - start) / 1000).toFixed(3);
-	console.log(`[Command Loader] ${collections.size} commands loaded successfully. (${seconds}s wasted)`);
+	logger.info(
+		`${collections.size} commands loaded successfully. (${seconds}s wasted)`,
+	);
 }
