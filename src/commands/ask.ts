@@ -5,7 +5,8 @@ import { GoogleGenAI } from "@google/genai/node";
 
 const askCommand: Command = {
 	name: "ask",
-	description: "Ask a question to Gemini",
+	description:
+		"Ask a question to Gemini\nIt uses the API to generate a response.",
 	disabled: !config.geminiApiKey,
 	execute: async (msg, args) => {
 		const ai = new GoogleGenAI({
