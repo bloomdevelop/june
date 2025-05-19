@@ -23,7 +23,8 @@ const votekickCommand: Command = {
 				embeds: [
 					{
 						title: "Error",
-						description: "I don't have permission to kick members.",
+						description:
+							"I don't have permission to kick members.\nCould you please configure to give me kick permission?",
 						colour: config.embedColor,
 					},
 				],

@@ -1,5 +1,6 @@
 import type { Command } from "@/types";
 import { config } from "@/config";
+import { client } from "..";
 
 const banCommand: Command = {
 	name: "ban",
@@ -11,6 +12,23 @@ const banCommand: Command = {
 
 		if (!userId) {
 			msg.reply("Please provide a user ID to ban.");
+			return;
+		}
+
+		const botMember = (await msg.channel?.server?.fetchMembers())?.members.find(
+			(member) => member.id.user === client.user?.id,
+		);
+		if (!botMember?.server?.havePermission("BanMembers")) {
+			msg.reply({
+				embeds: [
+					{
+						title: "Error",
+						description:
+							"I don't have permission to ban members.\nCould you please configure to give me ban permission?",
+						colour: config.embedColor,
+					},
+				],
+			});
 			return;
 		}
 
@@ -38,16 +56,19 @@ const banCommand: Command = {
 								description: `You have been banned from the server for the following reason: ${reason}`,
 								colour: config.embedColor,
 							},
-						]
-					})
-				})
-
-				msg.server?.banUser(member, { reason }).then(() => {
-					msg.reply(`User ${userId} has been banned.`);
-				}).catch((error) => {
-					msg.reply(`Failed to ban user: ${error.message}`);
+						],
+					});
 				});
-			})
+
+				msg.server
+					?.banUser(member, { reason })
+					.then(() => {
+						msg.reply(`User ${userId} has been banned.`);
+					})
+					.catch((error) => {
+						msg.reply(`Failed to ban user: ${error.message}`);
+					});
+			});
 		} catch (error) {
 			if (error instanceof Error) {
 				msg.reply({
