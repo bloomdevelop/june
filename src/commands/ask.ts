@@ -40,7 +40,7 @@ const askCommand: Command = {
 						{
 							title: "Error",
 							description: errorText,
-							colour: config.embedColor
+							colour: config.embedColor,
 						},
 					],
 				});
