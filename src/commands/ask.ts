@@ -15,6 +15,7 @@ const askCommand: Command = {
 		const prompt = args.join(" ");
 
 		try {
+			// TODO)) Change the system instruction to something else while maintaing the same limit.
 			const response = await ai.models.generateContent({
 				model: "gemini-2.5-flash-preview-04-17",
 				config: {
@@ -25,7 +26,11 @@ const askCommand: Command = {
 				contents: prompt,
 			});
 
-			msg.reply(response.text || "No response");
+			msg.reply(
+				response.text ||
+					response.candidates?.[0]?.content?.parts?.[0]?.text ||
+					"No response",
+			);
 		} catch (error) {
 			if (error instanceof Error) {
 				const errorText = textBuilder([
