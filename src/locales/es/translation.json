@@ -1,0 +1,12 @@
+{
+  "about": "Obtén información sobre June",
+  "ask": "Haz una pregunta a Gemini\nUtiliza la API para generar una respuesta.",
+  "ban": "Prohibir a un usuario del servidor",
+  "echo": "Repite el mensaje de vuelta a ti",
+  "estimate": "Devuelve una estimación del uso de memoria de una colección en bytes",
+  "help": "Obtén ayuda sobre los comandos",
+  "kick": "Expulsa a un usuario del servidor",
+  "ping": "Comprueba si el bot está activo",
+  "test": "Comando de prueba",
+  "votekick": "Votación inspirada en TF2, permite votar para expulsar a un usuario del servidor"
+}
