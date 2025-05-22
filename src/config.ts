@@ -1,5 +1,5 @@
-import { parse, safeParse } from "valibot";
-import { ConfigSchema } from "./types";
+import {parse} from "valibot";
+import {ConfigSchema} from "./types";
 
 /**
  * @description Bot's Configuration
