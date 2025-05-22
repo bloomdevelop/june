@@ -1,6 +1,6 @@
 import { Client } from "revolt.js";
 import { config } from "./config";
-import { loadCommands, collections } from "./utils/loadCommands";
+import { collections, loadCommands } from "./utils/loadCommands";
 import { Logger } from "./utils/logger";
 
 /**
@@ -95,4 +95,4 @@ process.on("SIGINT", async () => {
 	process.exit(0);
 });
 
-await client.loginBot(config.token)
+await client.loginBot(config.token);

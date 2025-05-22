@@ -1,5 +1,5 @@
-import type { Command } from "../types";
 import { readdir } from "node:fs/promises";
+import type { Command } from "../types";
 import { Logger } from "./logger";
 
 /**
