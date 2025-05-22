@@ -9,13 +9,18 @@ export type SupportedLang = "en" | "es";
 /**
  * In-memory cache for loaded translation resources.
  */
-const loadedTranslations: Partial<Record<SupportedLang, Record<string, string>>> = {};
+const loadedTranslations: Partial<
+	Record<SupportedLang, Record<string, string>>
+> = {};
 
 /**
  * Values for interpolation in translation strings.
  * Keys are variable names, values can be string, number, boolean, or undefined.
  */
-type InterpolationValues = Record<string, string | number | boolean | undefined>;
+type InterpolationValues = Record<
+	string,
+	string | number | boolean | undefined
+>;
 
 /**
  * Replaces {{variable}} placeholders in a string with provided values.
@@ -24,11 +29,11 @@ type InterpolationValues = Record<string, string | number | boolean | undefined>
  * @returns The interpolated string.
  */
 function interpolate(str: string, values?: InterpolationValues): string {
-  if (!values) return str;
-  
-  return str.replace(/{{(\w+)}}/g, (_, key) =>
-    values[key] !== undefined ? String(values[key]) : `{{${key}}}`
-  );
+	if (!values) return str;
+
+	return str.replace(/{{(\w+)}}/g, (_, key) =>
+		values[key] !== undefined ? String(values[key]) : `{{${key}}}`,
+	);
 }
 
 /**
@@ -38,10 +43,10 @@ function interpolate(str: string, values?: InterpolationValues): string {
  * @returns The correct pluralized string.
  */
 function pluralize(str: string, count: number): string {
-  if (!str.includes("|")) return str;
-  const [one = "", other = ""] = str.split("|");
-  
-  return count === 1 ? one : other;
+	if (!str.includes("|")) return str;
+	const [one = "", other = ""] = str.split("|");
+
+	return count === 1 ? one : other;
 }
 
 /**
@@ -50,17 +55,22 @@ function pluralize(str: string, count: number): string {
  * @param lang The language code to load.
  * @returns The translation key-value pairs for the language.
  */
-async function loadTranslations(lang: SupportedLang): Promise<Record<string, string>> {
-  if (loadedTranslations[lang]) return loadedTranslations[lang] || {};
-  try {
-    const filePath = path.resolve(__dirname, `../locales/${lang}/translation.json`);
-    const data = await fs.readFile(filePath, "utf-8");
-    loadedTranslations[lang] = JSON.parse(data);
-    
-    return loadedTranslations[lang] || {};
-  } catch (e) {
-    return {};
-  }
+async function loadTranslations(
+	lang: SupportedLang,
+): Promise<Record<string, string>> {
+	if (loadedTranslations[lang]) return loadedTranslations[lang] || {};
+	try {
+		const filePath = path.resolve(
+			__dirname,
+			`../locales/${lang}/translation.json`,
+		);
+		const data = await fs.readFile(filePath, "utf-8");
+		loadedTranslations[lang] = JSON.parse(data);
+
+		return loadedTranslations[lang] || {};
+	} catch (e) {
+		return {};
+	}
 }
 
 // TODO)) Make it dynamic via server config
@@ -71,7 +81,7 @@ let currentLang: SupportedLang = "en";
  * @param lang The language code to set as current.
  */
 export function setLang(lang: SupportedLang) {
-  currentLang = lang;
+	currentLang = lang;
 }
 
 /**
@@ -82,18 +92,18 @@ export function setLang(lang: SupportedLang) {
  * @returns The translated, interpolated, and pluralized string.
  */
 export async function t(
-  key: string,
-  options?: { values?: InterpolationValues; count?: number }
+	key: string,
+	options?: { values?: InterpolationValues; count?: number },
 ): Promise<string> {
-  const translations = await loadTranslations(currentLang);
-  const fallback = await loadTranslations("en");
+	const translations = await loadTranslations(currentLang);
+	const fallback = await loadTranslations("en");
 
-  let str = translations[key] || fallback[key] || key;
-  
-  if (options?.count !== undefined) {
-    str = pluralize(str, options.count);
-  }
-  
-  str = interpolate(str, options?.values);
-  return str;
+	let str = translations[key] || fallback[key] || key;
+
+	if (options?.count !== undefined) {
+		str = pluralize(str, options.count);
+	}
+
+	str = interpolate(str, options?.values);
+	return str;
 }

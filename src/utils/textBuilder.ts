@@ -5,5 +5,5 @@
  * @returns {string} The built string with lines separated by a newline character.
  */
 export default function textBuilder(lines: string[]): string {
-  return lines.join("\n");
+	return lines.join("\n");
 }

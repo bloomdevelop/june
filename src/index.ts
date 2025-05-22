@@ -95,4 +95,4 @@ process.on("SIGINT", async () => {
 	process.exit(0);
 });
 
-await client.loginBot(config.token)
+await client.loginBot(config.token);

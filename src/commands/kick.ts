@@ -9,7 +9,8 @@ const kickCommand: Command = {
 	disabled: false,
 	execute: async (msg, args) => {
 		const userId = args[0];
-		const reason = args.slice(1).join(" ") || (await t("system.reasonFallback"));
+		const reason =
+			args.slice(1).join(" ") || (await t("system.reasonFallback"));
 
 		if (!userId) {
 			msg.reply(await t("system.missingUserIdField"));
@@ -51,7 +52,9 @@ const kickCommand: Command = {
 						embeds: [
 							{
 								title: await t("kick.dm.title"),
-								description: await t("kick.dm.description", { values: { reason } }),
+								description: await t("kick.dm.description", {
+									values: { reason },
+								}),
 								colour: config.embedColor,
 							},
 						],
@@ -64,7 +67,9 @@ const kickCommand: Command = {
 						msg.reply(await t("kick.success", { values: { userId } }));
 					})
 					.catch(async (error) => {
-						msg.reply(await t("kick.failed", { values: { reason: error.message } }));
+						msg.reply(
+							await t("kick.failed", { values: { reason: error.message } }),
+						);
 					});
 			});
 		} catch (error) {

@@ -9,7 +9,8 @@ const banCommand: Command = {
 	disabled: false,
 	execute: async (msg, args) => {
 		const userId = args[0];
-		const reason = args.slice(1).join(" ") || await t("system.reasonFallback");
+		const reason =
+			args.slice(1).join(" ") || (await t("system.reasonFallback"));
 
 		if (!userId) {
 			msg.reply(await t("system.missingUserIdField"));

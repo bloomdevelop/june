@@ -30,7 +30,7 @@ const askCommand: Command = {
 			msg.reply(
 				response.text ||
 					response.candidates?.[0]?.content?.parts?.[0]?.text ||
-					await t("system.responseFallback"),
+					(await t("system.responseFallback")),
 			);
 		} catch (error) {
 			if (error instanceof Error) {

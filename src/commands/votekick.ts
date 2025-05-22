@@ -56,7 +56,6 @@ const votekickCommand: Command = {
 				throw new Error(await t("system.attemptedVotekickBot"));
 			}
 
-
 			const votekickText = textBuilder([
 				await t("votekick.voteStart", {
 					values: {
@@ -114,8 +113,8 @@ const votekickCommand: Command = {
 											title: await t("votekick.dm.title"),
 											description: await t("votekick.dm.description", {
 												values: {
-													reason: reason
-												}
+													reason: reason,
+												},
 											}),
 											colour: config.embedColor,
 										},
@@ -150,8 +149,6 @@ const votekickCommand: Command = {
 								}),
 							]);
 
-
-
 							voteMsg.edit({
 								embeds: [
 									{
@@ -171,7 +168,7 @@ const votekickCommand: Command = {
 								}),
 								await t("votekick.result.yesCount", {
 									values: {
-									 	yesCount,
+										yesCount,
 									},
 								}),
 								await t("votekick.result.noCount", {

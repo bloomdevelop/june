@@ -53,11 +53,11 @@ const helpCommand: Command = {
 
 		const commandText = textBuilder([
 			command.description,
-            await t("help.command.disabled", {
-                values: {
-                    value: command.disabled ? "Yes" : "No",
-                }
-            })
+			await t("help.command.disabled", {
+				values: {
+					value: command.disabled ? "Yes" : "No",
+				},
+			}),
 		]);
 
 		msg.reply({
