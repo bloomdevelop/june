@@ -1,17 +1,18 @@
 import { config } from "@/config";
 import type { Command } from "@/types";
+import { t } from "@/utils/i18n";
 import { client } from "..";
 
 const kickCommand: Command = {
 	name: "kick",
-	description: "Kick a user from the server",
+	description: await t("kick"),
 	disabled: false,
 	execute: async (msg, args) => {
 		const userId = args[0];
-		const reason = args.slice(1).join(" ") || "No reason provided";
+		const reason = args.slice(1).join(" ") || (await t("system.reasonFallback"));
 
 		if (!userId) {
-			msg.reply("Please provide a user ID to kick.");
+			msg.reply(await t("system.missingUserIdField"));
 			return;
 		}
 
@@ -22,9 +23,8 @@ const kickCommand: Command = {
 			msg.reply({
 				embeds: [
 					{
-						title: "Error",
-						description:
-							"I don't have permission to kick members.\nCould you please configure to give me kick permission?",
+						title: await t("system.error.title"),
+						description: await t("system.missingPermission.kick"),
 						colour: config.embedColor,
 					},
 				],
@@ -36,22 +36,22 @@ const kickCommand: Command = {
 			const permission = msg.member?.server?.havePermission("KickMembers");
 
 			if (!permission) {
-				msg.reply("You don't have permission to use this command.");
+				msg.reply(await t("system.noPermission.kick"));
 				return;
 			}
 
-			msg.server?.fetchMember(userId).then((member) => {
+			msg.server?.fetchMember(userId).then(async (member) => {
 				if (!member) {
-					msg.reply("User not found in the server.");
+					msg.reply(await t("system.userNotFound"));
 					return;
 				}
 
-				member.user?.openDM().then((dm) => {
+				member.user?.openDM().then(async (dm) => {
 					dm.sendMessage({
 						embeds: [
 							{
-								title: "You have been kicked",
-								description: `You have been kicked from the server for the following reason: ${reason}`,
+								title: await t("kick.dm.title"),
+								description: await t("kick.dm.description", { values: { reason } }),
 								colour: config.embedColor,
 							},
 						],
@@ -60,11 +60,11 @@ const kickCommand: Command = {
 
 				msg.server
 					?.kickUser(member)
-					.then(() => {
-						msg.reply(`User ${userId} has been kicked.`);
+					.then(async () => {
+						msg.reply(await t("kick.success", { values: { userId } }));
 					})
-					.catch((error) => {
-						msg.reply(`Failed to kick user: ${error.message}`);
+					.catch(async (error) => {
+						msg.reply(await t("kick.failed", { values: { reason: error.message } }));
 					});
 			});
 		} catch (error) {
@@ -72,7 +72,7 @@ const kickCommand: Command = {
 				msg.reply({
 					embeds: [
 						{
-							title: "Error",
+							title: await t("system.error.title"),
 							description: error.message,
 							colour: config.embedColor,
 						},

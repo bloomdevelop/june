@@ -1,12 +1,12 @@
 import { config } from "@/config";
 import type { Command } from "@/types";
+import { t } from "@/utils/i18n";
 import textBuilder from "@/utils/textBuilder";
 import { GoogleGenAI } from "@google/genai/node";
 
 const askCommand: Command = {
 	name: "ask",
-	description:
-		"Ask a question to Gemini\nIt uses the API to generate a response.",
+	description: await t("ask"),
 	disabled: !config.geminiApiKey,
 	execute: async (msg, args) => {
 		const ai = new GoogleGenAI({
@@ -30,12 +30,12 @@ const askCommand: Command = {
 			msg.reply(
 				response.text ||
 					response.candidates?.[0]?.content?.parts?.[0]?.text ||
-					"No response",
+					await t("system.responseFallback"),
 			);
 		} catch (error) {
 			if (error instanceof Error) {
 				const errorText = textBuilder([
-					"Something wrong happened:",
+					await t("system.error.description.noReason"),
 					"```",
 					error.message,
 					"```",
@@ -44,7 +44,7 @@ const askCommand: Command = {
 				await msg?.reply({
 					embeds: [
 						{
-							title: "Error",
+							title: await t("system.error.title"),
 							description: errorText,
 							colour: config.embedColor,
 						},

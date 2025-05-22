@@ -1,17 +1,18 @@
-import type { Command } from "@/types";
 import { config } from "@/config";
+import type { Command } from "@/types";
+import { t } from "@/utils/i18n";
 import { client } from "..";
 
 const banCommand: Command = {
 	name: "ban",
-	description: "Ban a user from the server",
+	description: await t("ban"),
 	disabled: false,
 	execute: async (msg, args) => {
 		const userId = args[0];
-		const reason = args.slice(1).join(" ") || "No reason provided";
+		const reason = args.slice(1).join(" ") || await t("system.reasonFallback");
 
 		if (!userId) {
-			msg.reply("Please provide a user ID to ban.");
+			msg.reply(await t("system.missingUserIdField"));
 			return;
 		}
 
@@ -22,9 +23,8 @@ const banCommand: Command = {
 			msg.reply({
 				embeds: [
 					{
-						title: "Error",
-						description:
-							"I don't have permission to ban members.\nCould you please configure to give me ban permission?",
+						title: await t("system.error.title"),
+						description: await t("system.missingPermission.ban"),
 						colour: config.embedColor,
 					},
 				],
@@ -38,22 +38,24 @@ const banCommand: Command = {
 			console.log(permission);
 
 			if (!permission) {
-				msg.reply("You don't have permission to use this command.");
+				msg.reply(await t("system.noPermission.ban"));
 				return;
 			}
 
-			msg.server?.fetchMember(userId).then((member) => {
+			msg.server?.fetchMember(userId).then(async (member) => {
 				if (!member) {
-					msg.reply("User not found in the server.");
+					msg.reply(await t("system.userNotFound"));
 					return;
 				}
 
-				member.user?.openDM().then((dm) => {
+				member.user?.openDM().then(async (dm) => {
 					dm.sendMessage({
 						embeds: [
 							{
-								title: "You have been banned",
-								description: `You have been banned from the server for the following reason: ${reason}`,
+								title: await t("ban.dm.title"),
+								description: await t("ban.dm.description", {
+									values: { reason: reason },
+								}),
 								colour: config.embedColor,
 							},
 						],
@@ -62,11 +64,17 @@ const banCommand: Command = {
 
 				msg.server
 					?.banUser(member, { reason })
-					.then(() => {
-						msg.reply(`User ${userId} has been banned.`);
+					.then(async () => {
+						msg.reply(await t("ban.success", { values: { userId: userId } }));
 					})
-					.catch((error) => {
-						msg.reply(`Failed to ban user: ${error.message}`);
+					.catch(async (error) => {
+						msg.reply(
+							await t("ban.failed", {
+								values: {
+									error: error.message,
+								},
+							}),
+						);
 					});
 			});
 		} catch (error) {
@@ -74,7 +82,7 @@ const banCommand: Command = {
 				msg.reply({
 					embeds: [
 						{
-							title: "Error",
+							title: await t("system.error.title"),
 							description: error.message,
 							colour: config.embedColor,
 						},

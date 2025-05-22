@@ -1,8 +1,9 @@
+import { t } from "@/utils/i18n";
 import type { Command } from "../types";
 
 const pingCommand: Command = {
   name: "ping",
-  description: "Check if the bot is alive",
+  description: await t("ping"),
   disabled: false,
   execute: async (msg) => {
     msg.channel?.sendMessage("Pong!");

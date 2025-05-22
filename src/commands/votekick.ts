@@ -1,5 +1,6 @@
 import { config } from "@/config";
 import type { Command } from "@/types";
+import { t } from "@/utils/i18n";
 import textBuilder from "@/utils/textBuilder";
 import { client } from "..";
 
@@ -8,12 +9,12 @@ const voteThreshold = 0.5; // 50% of votes needed to kick
 
 const votekickCommand: Command = {
 	name: "votekick",
-	description:
-		"TF2 insipred votekick, it lets you to vote to kick a user from the server",
+	description: await t("votekick"),
 	disabled: false,
 	execute: async (msg, args) => {
 		const userId = args[0];
-		const reason = args.slice(1).join(" ") || "No reason provided";
+		const reason =
+			args.slice(1).join(" ") || (await t("system.reasonFallback"));
 
 		const botMember = (await msg.channel?.server?.fetchMembers())?.members.find(
 			(member) => member.id.user === client.user?.id,
@@ -22,9 +23,8 @@ const votekickCommand: Command = {
 			msg.reply({
 				embeds: [
 					{
-						title: "Error",
-						description:
-							"I don't have permission to kick members.\nCould you please configure to give me kick permission?",
+						title: await t("system.error.title"),
+						description: await t("system.missingPermission.kick"),
 						colour: config.embedColor,
 					},
 				],
@@ -33,7 +33,7 @@ const votekickCommand: Command = {
 		}
 
 		if (!userId) {
-			throw new Error("Please provide a user ID to votekick.");
+			throw new Error(await t("system.missingUserIdField"));
 		}
 
 		try {
@@ -49,24 +49,30 @@ const votekickCommand: Command = {
 			});
 
 			if (!user) {
-				throw new Error("User not found in the server.");
+				throw new Error(await t("system.userNotFound"));
 			}
 
 			if (user?.user?.bot) {
-				throw new Error("You can't votekick a bot.");
+				throw new Error(await t("system.attemptedVotekickBot"));
 			}
 
+
 			const votekickText = textBuilder([
-				`${msg.author?.displayName || msg.author?.username} has started a votekick against ${user?.displayName || user?.user?.username}`,
-				`Reason: ${reason}`,
-				"React with \u2705 to vote yes, \u274C to vote no.",
+				await t("votekick.voteStart", {
+					values: {
+						user: msg.author?.displayName || msg.author?.username,
+						target: user?.displayName || user?.user?.username,
+					},
+				}),
+				reason,
+				await t("votekick.hint"),
 			]);
 
 			msg.channel
 				?.sendMessage({
 					embeds: [
 						{
-							title: "Votekick",
+							title: await t("votekick.title"),
 							description: votekickText,
 						},
 					],
@@ -83,8 +89,8 @@ const votekickCommand: Command = {
 						const yesReactions = voteMsg.reactions.get("\u2705");
 						const noReactions = voteMsg.reactions.get("\u274C");
 
-						const yesVotes = yesReactions?.size || 0;
-						const noVotes = noReactions?.size || 0;
+						const yesCount = yesReactions?.size || 0;
+						const noCount = noReactions?.size || 0;
 
 						const allMembers =
 							(await voteMsg.server?.fetchMembers())?.members || [];
@@ -93,20 +99,24 @@ const votekickCommand: Command = {
 						);
 						const memberCount = onlineMembers.length;
 						if (!memberCount) {
-							throw new Error("No online members found in the server.");
+							throw new Error(await t("system.noOnlineUsers"));
 						}
 
 						const requiredVotes = Math.ceil(memberCount * voteThreshold);
 						const doesVoteKickPass =
-							yesVotes > noVotes && yesVotes >= requiredVotes;
+							yesCount > noCount && yesCount >= requiredVotes;
 
 						if (doesVoteKickPass) {
-							await user.user?.openDM().then((dm) => {
+							await user.user?.openDM().then(async (dm) => {
 								dm.sendMessage({
 									embeds: [
 										{
-											title: "You have been kicked",
-											description: `You have been kicked from the server for the following reason: ${reason}`,
+											title: await t("votekick.dm.title"),
+											description: await t("votekick.dm.description", {
+												values: {
+													reason: reason
+												}
+											}),
 											colour: config.embedColor,
 										},
 									],
@@ -115,21 +125,73 @@ const votekickCommand: Command = {
 
 							await msg.server?.kickUser(user);
 
+							const resultSuccessText = textBuilder([
+								`## ${await t("votekick.result.title.success")}`,
+								await t("votekick.result.success", {
+									values: {
+										target: user.displayName || user.user?.username,
+									},
+								}),
+								await t("votekick.result.yesCount", {
+									values: {
+										yesCount,
+									},
+								}),
+								await t("votekick.result.noCount", {
+									values: {
+										noCount,
+									},
+								}),
+								await t("votekick.result.requiredVotes", {
+									values: {
+										requiredVotes,
+									},
+									count: requiredVotes,
+								}),
+							]);
+
+
+
 							voteMsg.edit({
 								embeds: [
 									{
-										title: "Votekick Result",
-										description: `## Votekick passed!\n ${user.displayName || user.user?.username} has been kicked from the server.\nYes: ${yesVotes}, No: ${noVotes}, Required: ${requiredVotes}`,
+										title: await t("votekick.result.title"),
+										description: resultSuccessText,
 										colour: config.embedColor,
 									},
 								],
 							});
 						} else {
+							const resultFailedText = textBuilder([
+								`## ${await t("votekick.result.title.failed")}`,
+								await t("votekick.result.failed", {
+									values: {
+										target: user.displayName || user.user?.username,
+									},
+								}),
+								await t("votekick.result.yesCount", {
+									values: {
+									 	yesCount,
+									},
+								}),
+								await t("votekick.result.noCount", {
+									values: {
+										noCount,
+									},
+								}),
+								await t("votekick.result.requiredVotes", {
+									values: {
+										requiredVotes,
+									},
+									count: requiredVotes,
+								}),
+							]);
+
 							voteMsg.edit({
 								embeds: [
 									{
-										title: "Votekick Result",
-										description: `## Votekick failed!\nNot enough votes to kick ${user.displayName || user.user?.username}.\nYes: ${yesVotes}, No: ${noVotes}, Required: ${requiredVotes}`,
+										title: await t("votekick.result.title"),
+										description: resultFailedText,
 										colour: config.embedColor,
 									},
 								],

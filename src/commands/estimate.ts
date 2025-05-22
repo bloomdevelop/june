@@ -1,12 +1,12 @@
+import { estimateShallowMemoryUsageOf } from "bun:jsc";
 import { config } from "@/config";
 import type { Command } from "@/types";
+import { t } from "@/utils/i18n";
 import { collections } from "@/utils/loadCommands";
-import { estimateShallowMemoryUsageOf } from "bun:jsc";
 
 const estimateCommand: Command = {
 	name: "estimate",
-	description:
-		"Returns a best-effort estimate of the memory usage of a collection in bytes",
+	description: await t("estimate"),
 	disabled: false,
 	execute: async (msg) => {
 		try {
@@ -14,7 +14,7 @@ const estimateCommand: Command = {
 			await msg.reply({
 				embeds: [
 					{
-						title: "Estimated Memory Usage from Command Collections",
+						title: await t("estimate.title"),
 						description: `\`${usage}\` bytes`,
 						colour: config.embedColor,
 					},
@@ -26,8 +26,10 @@ const estimateCommand: Command = {
 				await msg.reply({
 					embeds: [
 						{
-							title: "Error",
-							description: `Error estimating memory usage: ${error.message}`,
+							title: await t("system.error.title"),
+							description: await t("estimate.error", {
+								values: { error: error.message },
+							}),
 							colour: config.embedColor,
 						},
 					],
@@ -37,8 +39,10 @@ const estimateCommand: Command = {
 				await msg.reply({
 					embeds: [
 						{
-							title: "Error",
-							description: `Error estimating memory usage: ${String(error)}`,
+							title: await t("system.error.title"),
+							description: await t("estimate.error", {
+								values: { error: String(error) },
+							}),
 							colour: config.embedColor,
 						},
 					],
