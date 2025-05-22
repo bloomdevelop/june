@@ -1,0 +1,4 @@
+{
+    "image":"mcr.microsoft.com/devcontainers/javascript-node",
+    "onCreateCommand": "curl -fsSL https://bun.sh/install | bash; source ~/.bashrc; bun i"
+}
