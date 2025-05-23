@@ -22,7 +22,7 @@ const askCommand: Command = {
 				config: {
 					maxOutputTokens: 512,
 					systemInstruction:
-						"You are an assistant, keep it short, try to don't get above 2,000 character limit, like do don't attempt doing that ever again.",
+						"You are an assistant, keep it short, try to don't get above 2,000-character limit, like to don't attempt doing that ever again.",
 				},
 				contents: prompt,
 			});
