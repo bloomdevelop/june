@@ -6,7 +6,10 @@
 	"private": true,
 	"scripts": {
 		"chore:lint": "biome lint --fix",
-		"chore:format": "biome format --fix"
+		"chore:format": "biome format --fix",
+		"drizzle:generate": "drizzle-kit generate",
+		"drizzle:push": "drizzle-kit push",
+		"drizzle:migrate": "drizzle-kit migrate"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
