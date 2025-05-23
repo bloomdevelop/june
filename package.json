@@ -1,28 +1,28 @@
 {
-  "name": "june",
-  "module": "src/index.ts",
-  "type": "module",
-  "version": "1.0.0.alpha-1",
-  "private": true,
-  "scripts": {
-    "lint": "biome lint",
-    "fmt": "biome format"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/bun": "latest",
-    "drizzle-kit": "^0.31.1",
-    "ulid": "^3.0.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@google/genai": "^0.14.0",
-    "@libsql/client": "^0.15.7",
-    "drizzle-orm": "^0.43.1",
-    "revolt.js": "^7.2.0",
-    "valibot": "^1.1.0"
-  },
-  "trustedDependencies": ["@biomejs/biome", "esbuild", "test-server-sdk"]
+	"name": "june",
+	"module": "src/index.ts",
+	"type": "module",
+	"version": "1.0.0.alpha-1",
+	"private": true,
+	"scripts": {
+		"chore:lint": "biome lint --fix",
+		"chore:format": "biome format --fix"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/bun": "latest",
+		"drizzle-kit": "^0.31.1",
+		"ulid": "^3.0.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@google/genai": "^0.14.0",
+		"@libsql/client": "^0.15.7",
+		"drizzle-orm": "^0.43.1",
+		"revolt.js": "^7.2.0",
+		"valibot": "^1.1.0"
+	},
+	"trustedDependencies": ["@biomejs/biome", "esbuild", "test-server-sdk"]
 }
