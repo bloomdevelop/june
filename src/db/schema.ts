@@ -9,5 +9,7 @@ export const messagesTable = sqliteTable("messages", {
 		}),
 	messageId: text("messageId"),
 	userId: text("user_id"),
+	userDisplayName: text("user_display_name"),
+	userUsername: text("user_username"),
 	content: text("content"),
 });

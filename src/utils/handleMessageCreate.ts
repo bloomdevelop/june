@@ -13,6 +13,8 @@ export async function handleMessageCreate(message: Message) {
 		const newMessage: typeof messagesTable.$inferInsert = {
 			messageId: message.id,
 			userId: message.author.id,
+            userDisplayName: message.author.displayName,
+            userUsername: message.author.username,
 			content: message.content,
 		};
 
