@@ -18,7 +18,7 @@ const askCommand: Command = {
 		try {
 			// TODO)) Change the system instruction to something else while maintaing the same limit.
 			const response = await ai.models.generateContent({
-				model: "gemma-3n-e4b-it",
+				model: "gemini-2.5-flash-preview-05-20",
 				config: {
 					maxOutputTokens: 512,
 					systemInstruction:
