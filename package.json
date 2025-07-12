@@ -23,7 +23,7 @@
 	"dependencies": {
 		"@google/genai": "^0.14.0",
 		"@libsql/client": "^0.15.7",
-		"drizzle-orm": "^0.43.1",
+		"drizzle-orm": "^0.44.2",
 		"revolt.js": "^7.2.0",
 		"valibot": "^1.1.0"
 	},
